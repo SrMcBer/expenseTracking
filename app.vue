@@ -1,0 +1,11 @@
+<script setup lang="ts">
+useHead({
+  title: "Nuxt 3 x Supabase",
+});
+</script>
+<template>
+  <NuxtLayout>
+    <NuxtRouteAnnouncer />
+    <NuxtPage />
+  </NuxtLayout>
+</template>
