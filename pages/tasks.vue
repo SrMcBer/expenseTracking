@@ -11,8 +11,6 @@ interface Task {
 const client = useSupabaseClient<Database>();
 const user = useSupabaseUser();
 
-const tasksFromServer = ref();
-const isModalOpen = ref(false);
 const loading = ref(false);
 const newTask = ref("");
 
@@ -23,7 +21,6 @@ const { data: tasks } = await useAsyncData("tasks", async () => {
     .select("id, title, completed")
     .eq("user", user.value.id)
     .order("created_at");
-
   return data;
 });
 
@@ -65,5 +62,46 @@ const removeTask = async (task: Task) => {
 <template>
   <div class="my-[50%] w-full">
     <h1 class="mb-12 text-6xl font-bold">Todo List</h1>
+    <form class="my-2 flex gap-2" @submit.prevent="addTask">
+      <Input
+        v-model:model-value="newTask"
+        :loading="loading"
+        class="w-full"
+        placeholder="Nueva tarea"
+      ></Input>
+      <Button>Agregar</Button>
+    </form>
+    <Card v-if="tasks && tasks.length > 0">
+      <CardHeader>
+        <h2 class="text-2xl font-bold">Tareas</h2>
+      </CardHeader>
+      <CardContent>
+        <ul>
+          <li
+            v-for="task of tasks"
+            :key="task.id"
+            class="divide-y divide-gray-200 my-4"
+          >
+            <div class="flex w-full gap-10">
+              <span>{{ task.id }}</span>
+              <span>{{ task.title }}</span>
+              <Button size="icon" @click="completeTask(task)">
+                <Icon
+                  :name="`${task.completed ? 'ph:check' : 'ph:x'}`"
+                  class="size-8"
+                ></Icon>
+              </Button>
+              <Button
+                size="icon"
+                variant="destructive"
+                @click="removeTask(task)"
+              >
+                <Icon name="ph:trash-fill" class="size-8"></Icon>
+              </Button>
+            </div>
+          </li>
+        </ul>
+      </CardContent>
+    </Card>
   </div>
 </template>
