@@ -7,6 +7,6 @@ useHead({
   <NuxtLayout>
     <NuxtRouteAnnouncer />
     <NuxtPage />
-    <Toaster />
+    <Toaster rich-colors position="top-right" />
   </NuxtLayout>
 </template>

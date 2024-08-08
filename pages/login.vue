@@ -15,7 +15,7 @@ const passwordConfirmation = ref("");
 
 watchEffect(() => {
   if (user.value) {
-    navigateTo("/tasks");
+    navigateTo("/products");
   }
 });
 const signIn = async () => {
@@ -24,9 +24,13 @@ const signIn = async () => {
     password: password.value,
   });
   if (data) {
-    navigateTo("/tasks");
+    console.log("🚀 ~ file: login.vue:27 ~ signIn ~ data:", data);
+    toast.success("Logged in successfully");
+    navigateTo("/products");
   }
   if (error) {
+    console.log("🚀 ~ file: login.vue:32 ~ signIn ~ error:", error);
+    toast.error("ERROR WITH LOGIN");
     console.error(error);
   }
 };
@@ -37,17 +41,18 @@ const signUp = async () => {
     password: passwordCreation.value,
     options: {
       data: {
-        first_name: "Coneo",
-        last_name: "estevez",
-        age: 22,
+        first_name: "Miguel",
+        last_name: "Buitrago",
+        age: 24,
       },
     },
   });
-  if (data) {
+  if (data.session || data.user) {
     console.log("🚀 ~ file: login.vue:47 ~ signUp ~ data:", data);
     toast.success("User created successfully");
   }
   if (error) {
+    console.log("🚀 ~ file: login.vue:55 ~ signUp ~ error:", error)
     toast.error(error.message);
     console.error(error);
   }
@@ -65,19 +70,19 @@ const signUp = async () => {
         <form>
           <div class="grid w-full items-center gap-4">
             <div class="flex flex-col space-y-1.5">
-              <Label for="email">Correo</Label>
+              <Label for="emailLogin">Correo</Label>
               <Input
-                id="email"
+                id="emailLogin"
                 placeholder="Email"
                 type="email"
                 v-model="email"
               />
             </div>
             <div class="flex flex-col space-y-1.5">
-              <Label for="pass">Contraseña</Label>
+              <Label for="passLogin">Contraseña</Label>
               <div class="flex gap-4">
                 <Input
-                  id="pass"
+                  id="passLogin"
                   placeholder="Password"
                   :type="showPassword ? 'text' : 'password'"
                   v-model:model-value="password"
