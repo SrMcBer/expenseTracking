@@ -26,6 +26,12 @@ const { data: sales } = await useAsyncData("sales", async () => {
     .order("id");
   return data;
 });
+
+const { data: users } = await useAsyncData("users", async () => {
+  const { data } = await client.from("Users").select().order("id");
+  return data;
+});
+
 </script>
 
 <template>
@@ -39,8 +45,15 @@ const { data: sales } = await useAsyncData("sales", async () => {
       <accountAddFlow :accounts="accounts" />
     </div>
     <div class="flex flex-col gap-4">
+      {{ users }}
+      <usersNew />
+    </div>
+    <div class="flex flex-col gap-4">
       {{ sales }}
-      <salesNewSale />
+      <salesNew />
+    </div>
+    <div class="flex flex-col gap-4">
+      <purchaseNew />
     </div>
   </div>
 </template>

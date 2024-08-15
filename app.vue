@@ -1,6 +1,6 @@
 <script setup lang="ts">
 useHead({
-  title: "Nuxt 3 x Supabase",
+  title: "Zaphi Admin",
 });
 </script>
 <template>

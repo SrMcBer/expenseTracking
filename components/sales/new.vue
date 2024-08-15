@@ -1,53 +1,188 @@
 <script setup lang="ts">
 import type { Database } from "@/types/database.types";
-import { toTypedSchema } from "@vee-validate/zod";
 import { toast } from "vue-sonner";
-import * as z from "zod";
 
 const client = useSupabaseClient<Database>();
-const user = useSupabaseUser();
 
 const { data: products } = await useAsyncData("products", async () => {
-  if (!user.value) return;
   const { data } = await client.from("Product").select().order("id");
   return data;
 });
-const productsMap = computed(() => {
-  if (!products.value) return [];
-  return products.value.map((account) => account.name);
+
+const { data: users } = await useAsyncData("users", async () => {
+  const { data } = await client.from("Users").select().order("id");
+  return data;
 });
 
-const formSchema = z.object({
-  vendedor: z.string().min(5),
-  total: z.number().min(0),
-  nota: z.string().optional(),
+const { data: accounts } = await useAsyncData("accounts", async () => {
+  const { data } = await client.from("Account").select().order("id");
+  return data;
 });
 
 const loading = ref(false);
 const isDialogOpen = ref(false);
 
 const vendedor = ref("");
-const total = ref(0);
+const total = computed(() =>
+  sales_details.value.reduce(
+    (acc, curr) => acc + curr.valor * curr.cantidad,
+    0,
+  ),
+);
 const nota = ref("");
+
 const sales_details = ref<
   {
     product: string;
     cantidad: number;
+    valor: number;
   }[]
 >([]);
+
+const payment_structure = ref<
+  {
+    account_id: number;
+    amount: number;
+  }[]
+>([]);
+
 const addSaleDet = () => {
-  sales_details.value.push({ product: "", cantidad: 0 });
+  sales_details.value.push({ product: "", cantidad: 0, valor: 0 });
 };
 const removeProd = (index: number) => {
   sales_details.value.splice(index, 1);
 };
-async function onSubmit(values: Record<string, any>) {
-  if (sales_details.value.length === 0) {
-    toast.error("Debes agregar al menos un producto");
-    return;
+
+const addPayment = () => {
+  payment_structure.value.push({ account_id: 0, amount: 0 });
+};
+const removePayment = (index: number) => {
+  payment_structure.value.splice(index, 1);
+};
+
+const validateSaleData = () => {
+  if (!products.value) {
+    toast.error("No hay productos");
+    return false;
   }
-  console.log("🚀 ~ file: newSale.vue:23 ~ onSubmit ~ values:", values);
-}
+  if (!vendedor.value) {
+    toast.error("El vendedor es requerido");
+    return false;
+  }
+  if (!total.value) {
+    toast.error("El total es requerido");
+    return false;
+  }
+  if (!sales_details.value.length) {
+    toast.error("Debes agregar al menos un producto");
+    return false;
+  }
+  if (!payment_structure.value.length) {
+    toast.error("Debes seleccionar una cuenta");
+    return false;
+  }
+  for (const saleProd of sales_details.value) {
+    if (!saleProd.product) {
+      toast.error("Debes seleccionar un producto");
+      return false;
+    }
+    const prodData = products.value.find(
+      (prod) => prod.name === saleProd.product,
+    );
+    if (!prodData) {
+      toast.error("No se encontro el producto");
+      return false;
+    }
+    if (prodData.inventory === 0) {
+      toast.error(`Producto ${prodData.name} sin inventario`);
+      return false;
+    }
+    if (!saleProd.cantidad) {
+      toast.error("Debes ingresar una cantidad");
+      return false;
+    }
+    if (!saleProd.valor) {
+      toast.error("Debes ingresar un valor");
+      return false;
+    }
+  }
+  return true;
+};
+
+const createSale = async (saleObj: {
+  note: string;
+  total: number;
+  username: string;
+}) => {
+  const { data, error } = await client.from("Sales").upsert(saleObj).select();
+  if (error) {
+    toast.error("Error al crear la venta");
+    return false;
+  }
+  if (!data) {
+    toast.error("Error al crear la venta");
+    return false;
+  }
+  return data[0].id;
+};
+
+const createDet = async (saleDet: {
+  product_id: number;
+  quantity: number;
+  sale_id: number;
+  total: number;
+  value: number;
+}) => {
+  const { error } = await client.from("Sales_Det").upsert(saleDet);
+  if (error) {
+    console.error(error);
+    toast.error("Error al crear detalle de la venta");
+    return false;
+  }
+  return true;
+};
+
+const updateProd = async (prod_id: number, quantity: number) => {
+  if (!products.value) {
+    console.log("No hay productos");
+    return false;
+  }
+  const prod = products.value.find((prod) => prod.id === prod_id);
+  if (!prod) {
+    console.log("No se encontro el producto");
+    return false;
+  }
+  if (prod.inventory === null) return false;
+  const newInventory = prod.inventory - quantity;
+  const { error } = await client
+    .from("Product")
+    .update({ inventory: newInventory })
+    .eq("id", prod_id);
+  if (error) {
+    console.error(error);
+    toast.error("Error al actualizar el inventario");
+    return false;
+  }
+  return true;
+};
+
+const updateAcc = async (account_id: number, total: number) => {
+  if (!accounts.value) return false;
+  const account = accounts.value.find((acc) => acc.id === account_id);
+  if (!account || !account.saldo) return false;
+  const newBalance = account.saldo + total;
+  const { error } = await client
+    .from("Account")
+    .update({ saldo: newBalance })
+    .eq("id", account_id);
+  if (error) {
+    console.error(error);
+    toast.error("Error al actualizar la cuenta");
+    return false;
+  }
+  return true;
+};
+
 </script>
 
 <template>

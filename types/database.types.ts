@@ -284,6 +284,7 @@ export type Database = {
           quantity: number
           sale_id: number
           total: number
+          value: number
         }
         Insert: {
           created_at?: string
@@ -292,6 +293,7 @@ export type Database = {
           quantity?: number
           sale_id: number
           total?: number
+          value?: number
         }
         Update: {
           created_at?: string
@@ -300,6 +302,7 @@ export type Database = {
           quantity?: number
           sale_id?: number
           total?: number
+          value?: number
         }
         Relationships: [
           {
@@ -317,6 +320,27 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      Users: {
+        Row: {
+          Cargo: string
+          created_at: string
+          id: string
+          username: string
+        }
+        Insert: {
+          Cargo: string
+          created_at?: string
+          id?: string
+          username: string
+        }
+        Update: {
+          Cargo?: string
+          created_at?: string
+          id?: string
+          username?: string
+        }
+        Relationships: []
       }
     }
     Views: {
