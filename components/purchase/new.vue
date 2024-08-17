@@ -289,7 +289,7 @@ const createCompra = async () => {
         Nueva Compra
       </Button>
     </DialogTrigger>
-    <DialogContent class="max-w-xl">
+    <DialogContent class="max-h-[75%] max-w-xl overflow-scroll">
       <DialogHeader>
         <DialogTitle>Compras</DialogTitle>
         <DialogDescription>

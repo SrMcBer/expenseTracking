@@ -28,6 +28,12 @@ const handleUpdate = (value: boolean) => {
         ></Switch>
         <Icon name="ph:sun-fill" class="size-6" />
       </div>
+      <Button as-child v-if="user">
+        <NuxtLink to="/products">Productos</NuxtLink>
+      </Button>
+      <Button as-child v-if="user">
+        <NuxtLink to="/accounts">Cuentas</NuxtLink>
+      </Button>
       <Button
         v-if="user"
         class="text-white dark:text-slate-800"

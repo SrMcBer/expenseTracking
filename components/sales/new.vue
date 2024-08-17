@@ -360,7 +360,7 @@ const createPayment = async (
         <Icon name="ph:currency-circle-dollar" class="mr-2"></Icon> Nueva Venta
       </Button>
     </DialogTrigger>
-    <DialogContent class="max-w-xl">
+    <DialogContent class="max-h-[75%] max-w-xl overflow-scroll">
       <DialogHeader>
         <DialogTitle>Ventas</DialogTitle>
         <DialogDescription>
