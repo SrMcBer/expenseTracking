@@ -39,7 +39,8 @@ async function onSubmit(values: Record<string, any>) {
   <Dialog v-model:open="isDialogOpen">
     <DialogTrigger as-child>
       <Button variant="success">
-        <Icon name="ph:plus" class="mr-2"></Icon> Crear Producto
+        <Icon name="ph:plus" class="mr-2" />
+        <span class="hidden md:block"> Crear Producto </span>
       </Button>
     </DialogTrigger>
     <DialogContent class="sm:max-w-md">

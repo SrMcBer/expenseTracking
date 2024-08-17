@@ -12,7 +12,7 @@ const { data: products } = await useAsyncData("products", async () => {
 </script>
 
 <template>
-  <section>
+  <div class="min-h-screen w-full">
     <productsTable :products="products" />
-  </section>
+  </div>
 </template>

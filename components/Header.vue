@@ -17,7 +17,7 @@ const handleUpdate = (value: boolean) => {
 
 <template>
   <div
-    class="flex h-10 items-center justify-center bg-slate-600 md:justify-between"
+    class="fixed top-0 z-20 flex h-10 w-full items-center justify-center bg-slate-600 md:justify-between"
   >
     <div class="flex w-full items-center justify-between px-10">
       <div class="flex w-32 items-center justify-evenly">

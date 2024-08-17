@@ -31,104 +31,8 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { cn, valueUpdater } from "@/lib/utils";
-import { Checkbox } from "../ui/checkbox";
 import { Button } from "../ui/button";
 import { CaretSortIcon, ChevronDownIcon } from "@radix-icons/vue";
-
-// export interface Payment {
-//   id: string;
-//   amount: number;
-//   status: "pending" | "processing" | "success" | "failed";
-//   email: string;
-// }
-// const data: Payment[] = [
-//   {
-//     id: "m5gr84i9",
-//     amount: 316,
-//     status: "success",
-//     email: "ken99@yahoo.com",
-//   },
-//   {
-//     id: "3u1reuv4",
-//     amount: 242,
-//     status: "success",
-//     email: "Abe45@gmail.com",
-//   },
-//   {
-//     id: "derv1ws0",
-//     amount: 837,
-//     status: "processing",
-//     email: "Monserrat44@gmail.com",
-//   },
-//   {
-//     id: "5kma53ae",
-//     amount: 874,
-//     status: "success",
-//     email: "Silas22@gmail.com",
-//   },
-//   {
-//     id: "bhqecj4p",
-//     amount: 721,
-//     status: "failed",
-//     email: "carmella@hotmail.com",
-//   },
-// ];
-// const columnHelper = createColumnHelper<Payment>();
-// const columns = [
-//   columnHelper.display({
-//     id: "select",
-//     header: ({ table }) =>
-//       h(Checkbox, {
-//         checked:
-//           table.getIsAllPageRowsSelected() ||
-//           (table.getIsSomePageRowsSelected() && "indeterminate"),
-//         "onUpdate:checked": (value) => table.toggleAllPageRowsSelected(!!value),
-//         ariaLabel: "Select all",
-//       }),
-//     cell: ({ row }) => {
-//       return h(Checkbox, {
-//         checked: row.getIsSelected(),
-//         "onUpdate:checked": (value) => row.toggleSelected(!!value),
-//         ariaLabel: "Select row",
-//       });
-//     },
-//     enableSorting: false,
-//     enableHiding: false,
-//   }),
-//   columnHelper.accessor("status", {
-//     enablePinning: true,
-//     header: "Status",
-//     cell: ({ row }) =>
-//       h("div", { class: "capitalize" }, row.getValue("status")),
-//   }),
-//   columnHelper.accessor("email", {
-//     header: ({ column }) => {
-//       return h(
-//         Button,
-//         {
-//           variant: "ghost",
-//           onClick: () => column.toggleSorting(column.getIsSorted() === "asc"),
-//         },
-//         () => ["Email", h(CaretSortIcon, { class: "ml-2 h-4 w-4" })],
-//       );
-//     },
-//     cell: ({ row }) => h("div", { class: "lowercase" }, row.getValue("email")),
-//   }),
-//   columnHelper.accessor("amount", {
-//     header: () => h("div", { class: "text-right" }, "Amount"),
-//     cell: ({ row }) => {
-//       const amount = Number.parseFloat(row.getValue("amount"));
-
-//       // Format the amount as a dollar amount
-//       const formatted = new Intl.NumberFormat("en-US", {
-//         style: "currency",
-//         currency: "USD",
-//       }).format(amount);
-
-//       return h("div", { class: "text-right font-medium" }, formatted);
-//     },
-//   }),
-// ];
 
 export interface Product {
   category: string | null;
@@ -278,16 +182,16 @@ const table = useVueTable({
 
 <template>
   <div class="w-full">
-    <div class="flex items-center gap-2 py-4">
+    <div class="flex flex-wrap items-center gap-2 py-4">
       <Input
         class="max-w-sm"
-        placeholder="Filter por nombre"
+        placeholder="Filtrar por nombre"
         :model-value="table.getColumn('name')?.getFilterValue() as string"
         @update:model-value="table.getColumn('name')?.setFilterValue($event)"
       />
       <DropdownMenu>
         <DropdownMenuTrigger as-child>
-          <Button variant="outline" class="ml-auto">
+          <Button variant="outline" class="ml-auto flex-grow sm:flex-grow-0">
             Columns <ChevronDownIcon class="ml-2 h-4 w-4" />
           </Button>
         </DropdownMenuTrigger>
@@ -380,6 +284,31 @@ const table = useVueTable({
     <div class="flex items-center justify-end space-x-2 py-4">
       <div class="flex-1 text-sm text-muted-foreground">
         {{ table.getFilteredRowModel().rows.length }} productos
+      </div>
+      <div class="flex-1">
+        <Select
+        class="w-10"
+          @update:model-value="
+            (e) => {
+              table.setPageSize(Number(e));
+            }
+          "
+        >
+          <SelectTrigger>
+            <SelectValue placeholder="Numero de Productos" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="10"> 10 </SelectItem>
+            <SelectItem value="20"> 20 </SelectItem>
+            <SelectItem value="30"> 30 </SelectItem>
+            <SelectItem value="40"> 40 </SelectItem>
+            <SelectItem value="50"> 50 </SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+      <div class="flex-1 text-sm text-muted-foreground">
+        Página {{ table.getState().pagination.pageIndex + 1 }} de
+        {{ table.getPageCount() }}
       </div>
       <div class="space-x-2">
         <Button

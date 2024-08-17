@@ -59,9 +59,9 @@ const removePayment = (index: number) => {
 };
 
 const generateSale = async () => {
-  loading.value = true;
   const validated = validateSaleData();
   if (!validated) return;
+  loading.value = true;
   const saleObj = {
     note: nota.value,
     total: total.value,
