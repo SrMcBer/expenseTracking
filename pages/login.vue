@@ -52,7 +52,7 @@ const signUp = async () => {
     toast.success("User created successfully");
   }
   if (error) {
-    console.log("🚀 ~ file: login.vue:55 ~ signUp ~ error:", error)
+    console.log("🚀 ~ file: login.vue:55 ~ signUp ~ error:", error);
     toast.error(error.message);
     console.error(error);
   }
@@ -60,7 +60,7 @@ const signUp = async () => {
 </script>
 
 <template>
-  <div class="flex gap-8">
+  <div class="flex gap-8 flex-wrap items-center justify-center">
     <Card class="w-[350px]">
       <CardHeader>
         <CardTitle>Log In</CardTitle>

@@ -43,7 +43,7 @@ async function onSubmit(values: Record<string, any>) {
         <span class="hidden md:block"> Crear Producto </span>
       </Button>
     </DialogTrigger>
-    <DialogContent class="sm:max-w-md">
+    <DialogContent class="sm:max-w-sm">
       <DialogHeader>
         <DialogTitle>Crear Producto</DialogTitle>
         <DialogDescription>
