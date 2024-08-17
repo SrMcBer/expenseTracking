@@ -3,7 +3,6 @@ import type { Database } from "@/types/database.types";
 import type { Account } from "~/types/types";
 
 const client = useSupabaseClient<Database>();
-const user = useSupabaseUser();
 
 const accounts = ref<Account[]>([]);
 
@@ -19,19 +18,10 @@ const { data: flows } = await useAsyncData("cashFlow", async () => {
   return data;
 });
 
-const { data: sales } = await useAsyncData("sales", async () => {
-  const { data } = await client
-    .from("Sales")
-    .select(`*, Sales_Det()`)
-    .order("id");
-  return data;
-});
-
 const { data: users } = await useAsyncData("users", async () => {
   const { data } = await client.from("Users").select().order("id");
   return data;
 });
-
 </script>
 
 <template>
@@ -49,7 +39,7 @@ const { data: users } = await useAsyncData("users", async () => {
       <usersNew />
     </div>
     <div class="flex flex-col gap-4">
-      {{ sales }}
+      F
       <salesNew />
     </div>
     <div class="flex flex-col gap-4">

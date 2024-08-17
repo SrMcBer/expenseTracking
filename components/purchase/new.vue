@@ -176,7 +176,7 @@ const updateProd = async (
 const updateAcc = async (account_id: number, total: number) => {
   if (!accounts.value) return false;
   const account = accounts.value.find((acc) => acc.id === account_id);
-  if (!account || !account.saldo) return false;
+  if (!account || account.saldo == null) return false;
   const newBalance = account.saldo - total;
   const { data, error } = await client
     .from("Account")
@@ -194,6 +194,7 @@ const updateAcc = async (account_id: number, total: number) => {
   }
   return true;
 };
+
 const createCompraDet = async (compra_id: number) => {
   if (!products.value) return false;
   if (!purchase_details.value) return false;
